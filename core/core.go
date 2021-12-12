@@ -1,24 +1,14 @@
 package core
 
 import (
-	"fmt"
+	"github.com/smart-think-app/flow-track/dto"
 	"runtime"
-	"time"
 )
 
-func PrintMemUsage() {
+func GetMemUsage() dto.MemoryUsageDto {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
-	fmt.Printf("Alloc = %v MiB", bToMb(m.Alloc))
-	fmt.Printf("\tTotalAlloc = %v MiB", bToMb(m.TotalAlloc))
-	fmt.Printf("\tSys = %v MiB", bToMb(m.Sys))
-	fmt.Printf("\tNumGC = %v", m.NumGC)
-}
-
-func PrintDuration(startTime time.Time) {
-	now := time.Now()
-	duration := now.Unix() - startTime.Unix()
-	fmt.Printf("\tDuration = %d\n" ,duration )
+	return dto.MemoryUsageDto{MemoryAllocated: bToMb(m.Sys)}
 }
 
 func bToMb(b uint64) uint64 {

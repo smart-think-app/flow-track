@@ -56,7 +56,7 @@ func (b *flowBuilder) SetStatus(status status_enum.Status) iFlowBuilder {
 func (b *flowBuilder) SetDuration(startTime time.Time) iFlowBuilder {
 	now := time.Now()
 	duration := now.Unix() - startTime.Unix()
-	b.duration = float64(duration)/float64(1000)
+	b.duration = float64(duration) / float64(1000)
 	return b
 }
 
@@ -67,7 +67,7 @@ func (b *flowBuilder) SetAction(action string) iFlowBuilder {
 
 func (b *flowBuilder) Send() {
 	memoryUsage := core.GetMemUsage()
-	b.memoryAllocated = fmt.Sprintf("%vMiB" , memoryUsage.MemoryAllocated)
+	b.memoryAllocated = fmt.Sprintf("%vMiB", memoryUsage.MemoryAllocated)
 }
 
 func NewFlowTrack() *flowBuilder {

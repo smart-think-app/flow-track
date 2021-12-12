@@ -1,6 +1,7 @@
 package flow_track
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"github.com/smart-think-app/flow-track/core"
 	"github.com/smart-think-app/flow-track/status_enum"
@@ -8,11 +9,12 @@ import (
 )
 
 type iFlowBuilder interface {
-	Init(flowId string, function string, source string, service string) iFlowBuilder
+	InitChild(flowId string, function string, source string, service string) iFlowBuilder
 	SetDuration(startTime time.Time) iFlowBuilder
 	SetAction(action string) iFlowBuilder
 	SetMetadata(request interface{}, response interface{}) iFlowBuilder
 	SetStatus(status_enum.Status) iFlowBuilder
+	InitRoot(function string , service string) iFlowBuilder
 	Send()
 }
 type flowBuilder struct {
@@ -27,7 +29,7 @@ type flowBuilder struct {
 	action          string
 }
 
-func (b *flowBuilder) Init(flowId string, function string, source string, service string) iFlowBuilder {
+func (b *flowBuilder) InitChild(flowId string, function string, source string, service string) iFlowBuilder {
 
 	b.flowId = flowId
 	b.function = function
@@ -36,6 +38,20 @@ func (b *flowBuilder) Init(flowId string, function string, source string, servic
 
 	return b
 }
+
+func (b *flowBuilder) InitRoot(function string, service string) iFlowBuilder {
+
+	strHash := fmt.Sprintf("%s_%s_%d" , function, service ,time.Now().Unix())
+	hash := sha256.Sum256([]byte(strHash))
+
+	b.flowId = fmt.Sprintf("%x" , hash)
+	b.source = "root"
+	b.service = service
+	b.function = function
+
+	return b
+}
+
 
 func (b *flowBuilder) SetMetadata(request interface{}, response interface{}) iFlowBuilder {
 
